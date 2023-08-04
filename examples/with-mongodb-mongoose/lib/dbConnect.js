@@ -61,7 +61,7 @@ async function dbConnect() {
 
     cached.promise = mongoose
       .connect(JSON_API_URI, opts)
-      .then(() => Promise.all(Object.values(mongoose.models).map(Model => Model.init())))
+      .then(() => Promise.all(Object.values(mongoose.models).map(Model => Model.createCollection())))
       .then((mongoose) => {
         return mongoose
       })

@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "axios": "1.4.0",
     "mongoose": "^7.4.0",
     "stargate-mongoose": "https://valeri-karpov-test.s3.amazonaws.com/stargate-mongoose-0.2.0-ALPHA-3.tgz",
     "next": "latest",

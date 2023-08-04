@@ -1,4 +1,7 @@
+import axios from 'axios'
 import mongoose from 'mongoose'
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 
 /* PetSchema will correspond to a collection in your MongoDB database. */
 const PetSchema = new mongoose.Schema({
@@ -54,6 +57,41 @@ const PetSchema = new mongoose.Schema({
 
     type: Array,
   },
+
+  $vector: {
+    type: [Number],
+    validate: v => v == null || v.length === 1536,
+    default: () => undefined,
+  }
+}, { collectionOptions: { vector: { size: 1536, function: 'cosine' } } })
+
+PetSchema.pre('save', async function() {
+  console.log('Pre save')
+  const properties = [
+    'name',
+    'owner_name',
+    'species',
+    'diet',
+    'likes',
+    'dislikes'
+  ]
+  const input = properties.map(p => `${p}: ${this[p]}`).join('\n')
+  const embedding = await axios({
+    method: 'POST',
+    url: 'https://api.openai.com/v1/embeddings',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${OPENAI_API_KEY}`
+    },
+    data: {
+      model: 'text-embedding-ada-002',
+      input,
+    }
+  }).then(res => res.data.data[0].embedding)
+
+  console.log('Vector', embedding)
+
+  this.$vector = embedding
 })
 
 export default mongoose.models.Pet || mongoose.model('Pet', PetSchema)

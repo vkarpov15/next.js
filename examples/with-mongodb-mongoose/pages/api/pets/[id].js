@@ -24,13 +24,12 @@ export default async function handler(req, res) {
 
     case 'PUT' /* Edit a model by its ID */:
       try {
-        const pet = await Pet.findByIdAndUpdate(id, req.body, {
-          new: true,
-          runValidators: true,
-        })
-        if (!pet) {
+        const pet = await Pet.findById(id)
+        if (pet == null) {
           return res.status(400).json({ success: false })
         }
+        pet.set(req.body)
+        await pet.save()
         res.status(200).json({ success: true, data: pet })
       } catch (error) {
         res.status(400).json({ success: false })
