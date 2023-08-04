@@ -1,10 +1,37 @@
 import mongoose from 'mongoose'
+import { driver } from 'stargate-mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI
+mongoose.setDriver(driver)
 
-if (!MONGODB_URI) {
+const JSON_API_URI = process.env.JSON_API_URI
+
+if (!JSON_API_URI) {
   throw new Error(
-    'Please define the MONGODB_URI environment variable inside .env.local'
+    'Please define the JSON_API_URI environment variable inside .env.local'
+  )
+}
+
+const authUrl = process.env.STARGATE_AUTH_URL
+
+if (!authUrl) {
+  throw new Error(
+    'Please define the STARGATE_AUTH_URL environment variable inside .env.local'
+  )
+}
+
+const username = process.env.STARGATE_USERNAME
+
+if (!username) {
+  throw new Error(
+    'Please define the STARGATE_USERNAME environment variable inside .env.local'
+  )
+}
+
+const password = process.env.STARGATE_PASSWORD
+
+if (!password) {
+  throw new Error(
+    'Please define the STARGATE_PASSWORD environment variable inside .env.local'
   )
 }
 
@@ -27,11 +54,17 @@ async function dbConnect() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      authUrl,
+      username,
+      password,
     }
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose
-    })
+    cached.promise = mongoose
+      .connect(JSON_API_URI, opts)
+      .then(() => Promise.all(Object.values(mongoose.models).map(Model => Model.init())))
+      .then((mongoose) => {
+        return mongoose
+      })
   }
 
   try {

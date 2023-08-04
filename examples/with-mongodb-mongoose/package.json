@@ -6,7 +6,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "mongoose": "^7.0.2",
+    "mongoose": "^7.4.0",
+    "stargate-mongoose": "https://valeri-karpov-test.s3.amazonaws.com/stargate-mongoose-0.2.0-ALPHA-3.tgz",
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
