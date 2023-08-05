@@ -1,8 +1,6 @@
 import axios from 'axios'
 import mongoose from 'mongoose'
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-
 /* PetSchema will correspond to a collection in your MongoDB database. */
 const PetSchema = new mongoose.Schema({
   name: {
@@ -66,7 +64,13 @@ const PetSchema = new mongoose.Schema({
 }, { collectionOptions: { vector: { size: 1536, function: 'cosine' } } })
 
 PetSchema.pre('save', async function() {
-  console.log('Pre save')
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY
+  if (!OPENAI_API_KEY) {
+    throw new Error(
+      'Please define the OPENAI_API_KEY environment variable inside .env.local'
+    )
+  }
+
   const properties = [
     'name',
     'owner_name',

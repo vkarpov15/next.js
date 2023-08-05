@@ -3,38 +3,6 @@ import { driver } from 'stargate-mongoose'
 
 mongoose.setDriver(driver)
 
-const JSON_API_URI = process.env.JSON_API_URI
-
-if (!JSON_API_URI) {
-  throw new Error(
-    'Please define the JSON_API_URI environment variable inside .env.local'
-  )
-}
-
-const authUrl = process.env.STARGATE_AUTH_URL
-
-if (!authUrl) {
-  throw new Error(
-    'Please define the STARGATE_AUTH_URL environment variable inside .env.local'
-  )
-}
-
-const username = process.env.STARGATE_USERNAME
-
-if (!username) {
-  throw new Error(
-    'Please define the STARGATE_USERNAME environment variable inside .env.local'
-  )
-}
-
-const password = process.env.STARGATE_PASSWORD
-
-if (!password) {
-  throw new Error(
-    'Please define the STARGATE_PASSWORD environment variable inside .env.local'
-  )
-}
-
 /**
  * Global is used here to maintain a cached connection across hot reloads
  * in development. This prevents connections growing exponentially
@@ -47,6 +15,38 @@ if (!cached) {
 }
 
 async function dbConnect() {
+  const JSON_API_URI = process.env.JSON_API_URI
+
+  if (!JSON_API_URI) {
+    throw new Error(
+      'Please define the JSON_API_URI environment variable inside .env.local'
+    )
+  }
+
+  const authUrl = process.env.STARGATE_AUTH_URL
+
+  if (!authUrl) {
+    throw new Error(
+      'Please define the STARGATE_AUTH_URL environment variable inside .env.local'
+    )
+  }
+
+  const username = process.env.STARGATE_USERNAME
+
+  if (!username) {
+    throw new Error(
+      'Please define the STARGATE_USERNAME environment variable inside .env.local'
+    )
+  }
+
+  const password = process.env.STARGATE_PASSWORD
+
+  if (!password) {
+    throw new Error(
+      'Please define the STARGATE_PASSWORD environment variable inside .env.local'
+    )
+  }
+
   if (cached.conn) {
     return cached.conn
   }

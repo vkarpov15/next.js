@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }) {
       <div className="top-bar">
         <div className="nav">
           <Link href="/">Home</Link>
+          <Link href="/search">Search</Link>
           <Link href="/new">Add Pet</Link>
         </div>
 
